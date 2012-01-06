@@ -1,5 +1,6 @@
 #include <uslscore/uslscore.h>
-#include <moaicore-config.h>
+//#include <moaicore-config.h>
+
 
 #ifdef MOAI_OS_WINDOWS
 	#define GLEW_STATIC
