@@ -7,9 +7,9 @@
 #define SHADER(str) #str
 
 static cc8* _meshShaderVSH = SHADER (
-
+#ifdef GL_ES
 	precision highp float;
-
+#endif
 	attribute vec4 position;
 	attribute vec2 uv;
 	attribute vec4 color;
