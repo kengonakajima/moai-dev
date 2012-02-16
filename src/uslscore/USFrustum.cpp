@@ -17,7 +17,7 @@
 
 static double	_frustArea		( const USFrustum& frust );
 static double	_quadArea		( const USVec3D& v0, const USVec3D& v1, const USVec3D& v2, const USVec3D& v3 );
-static bool		_vecToXYPlane	( const USVec3D& loc, const USVec3D& vec, USVec3D& result );
+static bool		_vecToXYPlane	( const USVec3D& v0, const USVec3D& v1, USVec2D& result );
 
 //----------------------------------------------------------------//
 double _frustArea ( const USFrustum& frust ) {
@@ -296,6 +296,15 @@ void USFrustum::Init ( const USMatrix4x4& mtx ) {
 	
 	this->mPlanes [ NEAR_PLANE ].Init ( nrt, nlt, nlb );
 	this->mPlanes [ FAR_PLANE ].Init ( flt, frt, frb );
+	
+	USVec3D center;
+	mtx.GetTranslation ( center );
+	
+	for ( u32 i = 0; i < TOTAL_PLANES; ++i ) {
+		if ( USDist::VecToPlane ( center, this->mPlanes [ i ]) > 0.0f ) {
+			this->mPlanes [ i ].Flip ();
+		}
+	}
 	
 	double frustArea = _frustArea ( *this );
 	double boxArea = this->mAABB.Area ();

@@ -11,9 +11,9 @@ viewport = MOAIViewport.new ()
 viewport:setSize ( 320, 480 )
 viewport:setScale ( 320, 480 )
 
-layer = MOAILayer2D.new ()
+layer = MOAILayer.new ()
 layer:setViewport ( viewport )
-layer:setSortMode ( MOAILayer2D.SORT_NONE ) -- don't need layer sort
+layer:setSortMode ( MOAILayer.SORT_NONE ) -- don't need layer sort
 MOAISim.pushRenderPass ( layer )
 
 vertexFormat = MOAIVertexFormat.new ()
@@ -125,10 +125,10 @@ mesh:setVertexBuffer ( vbo )
 mesh:setIndexBuffer ( ibo )
 mesh:setPrimType ( MOAIMesh.GL_TRIANGLES )
 
-prop = MOAIProp2D.new ()
+prop = MOAIProp.new ()
 prop:setDeck ( mesh )
-prop:setCullMode ( MOAIProp2D.CULL_BACK )
-prop:setDepthTest ( MOAIProp2D.DEPTH_TEST_LESS_EQUAL )
+prop:setCullMode ( MOAIProp.CULL_BACK )
+prop:setDepthTest ( MOAIProp.DEPTH_TEST_LESS_EQUAL )
 prop:moveRot ( 360, 180, 90, 3 )
 layer:insertProp ( prop )
 

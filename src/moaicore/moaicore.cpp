@@ -4,6 +4,7 @@
 #include "pch.h"
 #include <chipmunk/chipmunk.h>
 #include <moaicore/moaicore.h>
+#include <lua-headers/moai2D_lua.h>
 
 extern "C" {
 	#include <zlib.h>
@@ -113,8 +114,8 @@ void moaicore::InitGlobals ( MOAIGlobals* globals ) {
 	REGISTER_LUA_CLASS ( MOAIJoystickSensor )
 	REGISTER_LUA_CLASS ( MOAIJsonParser )
 	REGISTER_LUA_CLASS ( MOAIKeyboardSensor )
-	REGISTER_LUA_CLASS ( MOAILayer2D )
-	REGISTER_LUA_CLASS ( MOAILayerBridge2D )
+	REGISTER_LUA_CLASS ( MOAILayer )
+	REGISTER_LUA_CLASS ( MOAILayerBridge )
 	//REGISTER_LUA_CLASS ( MOAILayoutFrame )
 	REGISTER_LUA_CLASS ( MOAILocationSensor )
 	REGISTER_LUA_CLASS ( MOAILogMgr )
@@ -132,11 +133,12 @@ void moaicore::InitGlobals ( MOAIGlobals* globals ) {
 	REGISTER_LUA_CLASS ( MOAIPathTerrainDeck )
 	REGISTER_LUA_CLASS ( MOAIPointerSensor )
 	REGISTER_LUA_CLASS ( MOAIProp )
-	REGISTER_LUA_CLASS ( MOAIProp2D )
+	REGISTER_LUA_CLASS ( MOAIProp )
 	REGISTER_LUA_CLASS ( MOAIScriptDeck )
 	REGISTER_LUA_CLASS ( MOAIScriptNode )
 	REGISTER_LUA_CLASS ( MOAISerializer )
 	REGISTER_LUA_CLASS ( MOAIShader )
+	REGISTER_LUA_CLASS ( MOAIShaderMgr )
 	REGISTER_LUA_CLASS ( MOAISim )
 	REGISTER_LUA_CLASS ( MOAIStretchPatch2D )
 	REGISTER_LUA_CLASS ( MOAISurfaceDeck2D )
@@ -179,6 +181,10 @@ void moaicore::InitGlobals ( MOAIGlobals* globals ) {
 		REGISTER_LUA_CLASS ( MOAICpShape )
 		REGISTER_LUA_CLASS ( MOAICpSpace )
 	#endif
+	
+	// run bundled init scripts for back compat and Lua framework extensions
+	MOAILuaStateHandle state = MOAILuaRuntime::Get ().State ();
+	state.Run ( moai2D_lua, moai2D_lua_SIZE, 0, 0 );
 }
 
 //----------------------------------------------------------------//

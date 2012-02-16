@@ -35,7 +35,7 @@ int MOAITextBox::_clearCurves ( lua_State* L ) {
 /**	@name	getLineSize
 	@text	Returns the size of a line (in pixels).
 
-	@in		MOAIFont self
+	@in		MOAITextBox self
 	@out	number lineScale		The size of the line in pixels.
 */
 int MOAITextBox::_getLineSize ( lua_State* L ) {
@@ -429,11 +429,13 @@ void MOAITextBox::Draw ( int subPrimID, bool reload ) {
 	
 		MOAIGfxDevice& gfxDevice = MOAIGfxDevice::Get ();
 
-		gfxDevice.SetPenColor ( this->mColor );
-		gfxDevice.SetBlendMode ( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		gfxDevice.SetScissorRect ();
+		this->LoadShader ();
 
-		MOAIShaderMgr::Get ().BindShader ( MOAIShaderMgr::FONT_SHADER );
+		if ( !this->mShader ) {
+			// TODO: this should really come from MOAIFont, which should really be a
+			// specialized implementation of MOAIDeck...
+			gfxDevice.SetShaderPreset ( MOAIShaderMgr::FONT_SHADER );
+		}
 
 		gfxDevice.SetVertexTransform ( MOAIGfxDevice::VTX_WORLD_TRANSFORM, this->GetLocalToWorldMtx ());
 		gfxDevice.SetVertexMtxMode ( MOAIGfxDevice::VTX_STAGE_MODEL, MOAIGfxDevice::VTX_STAGE_PROJ );
@@ -520,12 +522,14 @@ MOAITextBox::MOAITextBox () :
 	mNeedsLayout ( false ) {
 	
 	RTTI_BEGIN
-		RTTI_EXTEND ( MOAIProp2D )
+		RTTI_EXTEND ( MOAIProp )
 		RTTI_EXTEND ( MOAIAction )
 	RTTI_END
 	
 	this->mFrame.Init ( 0.0f, 0.0f, 0.0f, 0.0f ); 
 	this->SetMask ( MOAIProp::CAN_DRAW | MOAIProp::CAN_DRAW_DEBUG );
+	
+	this->mBlendMode.SetBlend ( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 }
 
 //----------------------------------------------------------------//
@@ -570,7 +574,7 @@ void MOAITextBox::NextPage ( bool reveal ) {
 //----------------------------------------------------------------//
 void MOAITextBox::OnDepNodeUpdate () {
 
-	MOAIProp2D::OnDepNodeUpdate ();
+	MOAIProp::OnDepNodeUpdate ();
 
 	if ( this->mYFlip ) {
 		
@@ -593,7 +597,7 @@ void MOAITextBox::OnUpdate ( float step ) {
 //----------------------------------------------------------------//
 void MOAITextBox::RegisterLuaClass ( MOAILuaState& state ) {
 
-	MOAIProp2D::RegisterLuaClass ( state );
+	MOAIProp::RegisterLuaClass ( state );
 	MOAIAction::RegisterLuaClass ( state );
 
 	state.SetField ( -1, "LEFT_JUSTIFY", ( u32 )MOAIFont::LEFT_JUSTIFY );
@@ -604,7 +608,7 @@ void MOAITextBox::RegisterLuaClass ( MOAILuaState& state ) {
 //----------------------------------------------------------------//
 void MOAITextBox::RegisterLuaFuncs ( MOAILuaState& state ) {
 	
-	MOAIProp2D::RegisterLuaFuncs ( state );
+	MOAIProp::RegisterLuaFuncs ( state );
 	MOAIAction::RegisterLuaFuncs ( state );
 	
 	luaL_Reg regTable [] = {
@@ -648,14 +652,14 @@ void MOAITextBox::ReserveCurves ( u32 total ) {
 //----------------------------------------------------------------//
 void MOAITextBox::SerializeIn ( MOAILuaState& state, MOAIDeserializer& serializer ) {
 
-	MOAIProp2D::SerializeIn ( state, serializer );
+	MOAIProp::SerializeIn ( state, serializer );
 	MOAIAction::SerializeIn ( state, serializer );
 }
 
 //----------------------------------------------------------------//
 void MOAITextBox::SerializeOut ( MOAILuaState& state, MOAISerializer& serializer ) {
 
-	MOAIProp2D::SerializeOut ( state, serializer );
+	MOAIProp::SerializeOut ( state, serializer );
 	MOAIAction::SerializeOut ( state, serializer );
 }
 

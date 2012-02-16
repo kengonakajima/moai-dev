@@ -120,7 +120,7 @@ private:
 
 	u32				mWidth;
 
-	USFrustum*		mViewVolume; // TODO: autogenerate?
+	USFrustum		mViewVolume;
 	
 	//----------------------------------------------------------------//
 	static int				_isProgrammable			( lua_State* L );
@@ -158,7 +158,7 @@ public:
 	GET_BOOL ( IsProgrammable, mIsProgrammable )
 	GET_BOOL ( IsFramebufferSupported, mIsFramebufferSupported )
 	
-	GET_SET ( USFrustum*, ViewVolume, mViewVolume )
+	GET ( const USFrustum&, ViewVolume, mViewVolume )
 	
 	//----------------------------------------------------------------//
 	void					BeginDrawing			();
@@ -258,6 +258,8 @@ public:
 	
 	void					SoftReleaseResources	( u32 age );
 	
+	void					UpdateViewVolume		();
+	
 	void					WriteQuad				( USVec2D* vtx, USVec2D* uv );
 	void					WriteQuad				( USVec4D* vtx, USVec2D* uv );
 	
@@ -314,24 +316,17 @@ public:
 	//----------------------------------------------------------------//
 	inline void WriteVtx ( float x, float y ) {
 		
-		USVec3D vtx;
-		vtx.mX = x;
-		vtx.mY = y;
-		vtx.mZ = 0.0f;
-		
-		if ( this->mCpuVertexTransform ) {
-			this->mCpuVertexTransformMtx.Transform ( vtx );	
-		}
-		this->Write ( vtx );
+		this->WriteVtx ( x, y, 0.0f );
 	}
 	
 	//----------------------------------------------------------------//
 	inline void WriteVtx ( float x, float y, float z ) {
 		
-		USVec3D vtx;
+		USVec4D vtx;
 		vtx.mX = x;
 		vtx.mY = y;
 		vtx.mZ = z;
+		vtx.mW = 1.0f;
 		
 		if ( this->mCpuVertexTransform ) {
 			this->mCpuVertexTransformMtx.Transform ( vtx );	
@@ -342,19 +337,13 @@ public:
 	//----------------------------------------------------------------//
 	inline void WriteVtx ( USVec2D vtx ) {
 		
-		if ( this->mCpuVertexTransform ) {
-			this->mCpuVertexTransformMtx.Transform ( vtx );	
-		}
 		this->WriteVtx ( vtx.mX, vtx.mY, 0.0f );
 	}
 	
 	//----------------------------------------------------------------//
 	inline void WriteVtx ( USVec3D vtx ) {
 		
-		if ( this->mCpuVertexTransform ) {
-			this->mCpuVertexTransformMtx.Transform ( vtx );	
-		}
-		this->Write ( vtx );
+		this->WriteVtx ( vtx.mX, vtx.mY, vtx.mZ );
 	}
 };
 

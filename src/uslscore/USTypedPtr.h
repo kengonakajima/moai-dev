@@ -4,7 +4,12 @@
 #ifndef	USTYPEDPTR_H
 #define	USTYPEDPTR_H
 
+
 #include "USTypeID.h"
+
+//#include <uslscore/USTypeID.h> 一旦HEADのにもどしてやってみようか
+
+
 //================================================================//
 // USTypedPtr
 //================================================================//
