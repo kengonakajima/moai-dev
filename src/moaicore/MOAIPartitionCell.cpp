@@ -102,10 +102,9 @@ void MOAIPartitionCell::GatherProps ( MOAIPartitionResultBuffer& results, const 
 		
 		if (( mask == 0 ) || ( prop->mMask & mask )) {
 			if ( prop->mCellSize > 0.0f ) {
-				
-				if ( !frustum.Cull ( prop->mBounds )) {
+//				if ( !frustum.Cull ( prop->mBounds )) {    //////// TODO: meshのGetBoundsがUSRectをつかうのでこれが正確にできない。ので、自力でのcullにとりあえずする
 					results.PushProp ( *prop );
-				}
+//				} 
 			}
 			else {
 				results.PushProp ( *prop );
